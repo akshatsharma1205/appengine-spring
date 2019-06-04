@@ -78,9 +78,10 @@ public class ValidateToken {
 
             Connection conn = DatabaseController.getConnection();
             PreparedStatement setstmt = conn.prepareStatement(
-                    "UPDATE Customer SET Expires = ? WHERE PhoneNumber LIKE ?;");
+                    "UPDATE Customer SET Expires = ?,CustomerId = ? WHERE PhoneNumber LIKE ?;");
             setstmt.setString(1, validateTokenResponse.getExpires());
-            setstmt.setString(2, "%"+phonenumber+"%");
+            setstmt.setString(2,validateTokenResponse.getId());
+            setstmt.setString(3, "%"+phonenumber+"%");
             setstmt.execute();
             responseData="exists";
 

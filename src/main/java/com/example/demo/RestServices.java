@@ -115,12 +115,10 @@ public class RestServices implements ErrorController {
 	}
 
 	@RequestMapping("/autodebit")
-	public AutoDebitResponse debiting(@RequestParam(value="amount", defaultValue="0.00") String amount) {
-		AutoDebit deb =new AutoDebit(validateTokenResponse.getMobile(),amount);
+	public String debiting(@RequestParam(value="number", defaultValue="0") String number,@RequestParam(value="amount", defaultValue="0.00") String amount) {
+		AutoDebit deb =new AutoDebit(number,amount);
 		deb.auto_debit();
-		Gson g=new Gson();
-		autoDebitResponse= g.fromJson(deb.getResponseData(),AutoDebitResponse.class);
-		return autoDebitResponse;
+		return deb.getResponseData();
 	}
 
 	@RequestMapping("/transactionstatus")

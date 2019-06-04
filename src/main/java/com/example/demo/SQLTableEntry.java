@@ -13,6 +13,7 @@ public class SQLTableEntry {
     String AccessToken;
     String State;
     String Expires;
+    String CustomerId;
     private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
 
 
@@ -37,12 +38,21 @@ public class SQLTableEntry {
                 AccessToken = rs.getString(2);
                 State = rs.getString(3);
                 Expires=rs.getString(4);
+                CustomerId=rs.getString(5);
                 LOGGER.info("phonenumberrequest"+PhoneNumber);
             }
         }catch (Exception e){
 
             e.printStackTrace();
         }
+    }
+
+    public String getCustomerId() {
+        return CustomerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        CustomerId = customerId;
     }
 
     public String getPhoneNumber() {
