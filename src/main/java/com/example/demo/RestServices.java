@@ -1,15 +1,14 @@
 package com.example.demo;
 
-import com.example.demo.Model.DatabaseController;
+import com.example.demo.bo.*;
+import com.example.demo.dao.CustomerDAO;
+import com.example.demo.model.*;
 import com.google.gson.Gson;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -21,12 +20,7 @@ public class RestServices implements ErrorController {
 		SpringApplication.run(RestServices.class, args);
 	}
 
-
-
-
-
-	private final AtomicLong counter = new AtomicLong();
-	Account account;
+    private final AtomicLong counter = new AtomicLong();
 	SendOtpResponse otpresponse;
 
 	//For a NULL Page
@@ -50,16 +44,11 @@ public class RestServices implements ErrorController {
 	@RequestMapping("/checkexistence")
 	public String checkexistence(@RequestParam(value ="number",defaultValue = "0")String number){
 		try {
-			Connection conn = DatabaseController.getConnection();
 
-			PreparedStatement getstmt = conn.prepareStatement("SELECT * FROM Customer WHERE PhoneNumber LIKE ?");
-			getstmt.setString(1, "%" + number + "%");
+			CustomerDAO customer= new CustomerDAO();
+			customer.retrieveData(number);
 
-			ResultSet rs = getstmt.executeQuery();
-			SQLTableEntry sl = new SQLTableEntry();
-
-			sl.SQLRetrieve(rs);
-			if(sl.getPhoneNumber()==null){return "no";}
+			if(customer.getAccessToken()==null){return "no";}
 			else {return "yes";}
 
 		}catch(Exception e){
@@ -79,17 +68,15 @@ public class RestServices implements ErrorController {
 
 	}
 
+    ValidateOtpResponse validateOtpResponse;
 	@RequestMapping("/validateotp")
-	public ValidateOtpResponse validatingotp(@RequestParam(value="number", defaultValue="0") String number,@RequestParam(value="otp", defaultValue="111111") String otp) {
+	public String validatingotp(@RequestParam(value="number", defaultValue="0") String number,@RequestParam(value="otp", defaultValue="111111") String otp) {
 		ValidateOtp votp =new ValidateOtp(number,otp);
 		votp.validate_OTP();
-		Gson g=new Gson();
-		validateOtpResponse= g.fromJson(votp.getResponseData(),ValidateOtpResponse.class);
-		return validateOtpResponse;
+		return votp.getResponseData();
 	}
 
 
-	ValidateOtpResponse validateOtpResponse;
 	ValidateTokenResponse validateTokenResponse;
 	AutoDebitResponse autoDebitResponse;
 
@@ -100,13 +87,42 @@ public class RestServices implements ErrorController {
 		return token.getResponseData();
 	}
 
+    @RequestMapping("/gettransactionid")
+    public String gettingId(@RequestParam(value="number", defaultValue="0") String number,
+                            @RequestParam(value="totalamount", defaultValue="0.00") String totalamount){
+        GetTransactionId getTransactionId=new GetTransactionId(number,totalamount);
+        getTransactionId.Get_transactionID();
+        return getTransactionId.getTransactionId();
+    }
+
 	@RequestMapping("/checkbalance")
-	public String checkingbalance(@RequestParam(value="number", defaultValue="0") String number,@RequestParam(value="totalamount", defaultValue="0.00") String totalamount){
-		CheckBalance check=new CheckBalance(number,totalamount);
+	public String checkingbalance(@RequestParam(value="number", defaultValue="0") String number,
+                                  @RequestParam(value="totalamount", defaultValue="0.00") String totalamount,
+                                  @RequestParam(value="transid",defaultValue="0") String TransactionId){
+		CheckBalance check=new CheckBalance(number,totalamount,TransactionId);
 		check.check_balance();
 		return check.getResponseData();
 	}
 
+	@RequestMapping("/addmoney")
+	public String addmoney(@RequestParam(value="number", defaultValue="0") String number,
+                           @RequestParam(value="topupamt", defaultValue="0.00") String topupamt,
+                           @RequestParam(value="transid",defaultValue="0") String TransactionId){
+		AddMoney addMoney = new AddMoney(number,topupamt,TransactionId);
+		try{
+			addMoney.add_money();
+		}catch (Exception e){}
+
+		return addMoney.getResponse();
+
+	}
+
+	@RequestMapping("/callbackurl")
+    public String callback(){
+	    return "Please press continue to go ahead !";
+    }
+
+	//TODO work on this
 	@RequestMapping("/revokeaccess")
 	public String revokingaccess(){
 		RevokeAccess revoke=new RevokeAccess(validateOtpResponse.getAccess_token());
@@ -115,12 +131,15 @@ public class RestServices implements ErrorController {
 	}
 
 	@RequestMapping("/autodebit")
-	public String debiting(@RequestParam(value="number", defaultValue="0") String number,@RequestParam(value="amount", defaultValue="0.00") String amount) {
-		AutoDebit deb =new AutoDebit(number,amount);
+	public String debiting(@RequestParam(value="number", defaultValue="0") String number,
+                           @RequestParam(value="totalamount", defaultValue="0.00") String amount,
+                           @RequestParam(value="transid",defaultValue="0") String TransactionId) {
+		AutoDebit deb =new AutoDebit(number,amount,TransactionId);
 		deb.auto_debit();
 		return deb.getResponseData();
 	}
 
+	//TODO Do we need this API??
 	@RequestMapping("/transactionstatus")
 	public String txnstatus(){
 		TransactionStatus stat=new TransactionStatus();

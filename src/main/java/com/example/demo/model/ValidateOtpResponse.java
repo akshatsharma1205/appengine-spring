@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.model;
 
 public class ValidateOtpResponse {
     private String access_token;

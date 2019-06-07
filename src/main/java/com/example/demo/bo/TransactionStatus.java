@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.bo;
 
+import com.example.demo.model.TransactionStatusRequest;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
 import org.json.JSONObject;
 
@@ -12,28 +13,30 @@ import java.net.URL;
 import java.util.TreeMap;
 
 public class TransactionStatus {
+
+    private TransactionStatusRequest request;
+    String responseData;
+
     public TransactionStatus() {
     }
-    String merchantMid = "Delvit07224170213556";
-    String orderId = "order1";
-    String merchantKey = "&!vj74@Ri&g6U1TI";
 
-    String responseData;
+    public TransactionStatus(String orderId) {
+        this.request = new TransactionStatusRequest(orderId);
+    }
 
     public String getResponseData() {
         return responseData;}
 
-
-        public void transaction_status() {
+    public void transaction_status() {
         TreeMap<String, String> paytmParams = new TreeMap<String, String>();
-        paytmParams.put("MID", merchantMid);
-        paytmParams.put("ORDERID", orderId);
+        paytmParams.put("MID", request.getMerchantMid());
+        paytmParams.put("ORDERID", request.getOrderId());
 
         try {
             URL transactionURL = new URL("https://securegw-stage.paytm.in/order/status");
 
 
-            String paytmChecksum = CheckSumServiceHelper.getCheckSumServiceHelper().genrateCheckSum(merchantKey, paytmParams);
+            String paytmChecksum = CheckSumServiceHelper.getCheckSumServiceHelper().genrateCheckSum(request.getMerchantKey(), paytmParams);
             paytmParams.put("CHECKSUMHASH", paytmChecksum);
             JSONObject obj = new JSONObject(paytmParams);
             String postData = "JsonData=" + obj.toString();

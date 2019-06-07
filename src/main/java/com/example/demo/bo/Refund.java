@@ -1,5 +1,7 @@
-package com.example.demo;
+package com.example.demo.bo;
 
+import com.example.demo.model.TransactionStatusResponse;
+import com.example.demo.model.ValidateTokenResponse;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
 
 import java.io.BufferedReader;
@@ -28,7 +30,7 @@ public class Refund {
     ValidateTokenResponse valt;
     final String MERCHANT_MID = "Delvit07224170213556";
     final String txnType = "REFUND";
-    final String orderId = "ORDER_123456789";
+    final String orderId = "";
     final String txnId = txnstatres.getTXNID();
     final String refId = valt.getMobile();
     final String refundAmount = "1.00";
