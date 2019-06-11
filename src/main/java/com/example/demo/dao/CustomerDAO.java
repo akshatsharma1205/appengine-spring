@@ -17,6 +17,14 @@ public class CustomerDAO {
     public CustomerDAO() {
     }
 
+    public CustomerDAO(CustomerDAO cust) {
+        this.PhoneNumber = cust.getPhoneNumber();
+        this.AccessToken = cust.getAccessToken();
+        this.State = cust.getState();
+        this.Expires= cust.getExpires();
+        this.CustomerId= cust.getCustomerId();
+    }
+
     public CustomerDAO(String phoneNumber, String accessToken, String state, String expires, String customerId) {
         PhoneNumber = phoneNumber;
         AccessToken = accessToken;

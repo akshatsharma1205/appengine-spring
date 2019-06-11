@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.model.Paytm;
 
 public class ValidateTokenRequest {
     private String phonenumber="";

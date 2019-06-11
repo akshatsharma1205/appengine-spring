@@ -23,6 +23,13 @@ public class TransactionsDAO {
         Status = status;
     }
 
+    public TransactionsDAO(TransactionsDAO trans) {
+        this.TransactionId = trans.getTransactionId();
+        this.PhoneNumber = trans.getPhoneNumber();
+        this.Amount = trans.getAmount();
+        this.Status = trans.getStatus();
+    }
+
     public void retrieveData(String orderId){
         try {
 
@@ -94,8 +101,8 @@ public class TransactionsDAO {
 
             PreparedStatement setstmt = conn.prepareStatement(
                     "UPDATE Transactions SET Status=? WHERE TransactionId LIKE ?;");
-            setstmt.setString(3, status);
-            setstmt.setString(4, "%"+transactionId+"%");
+            setstmt.setString(1, status);
+            setstmt.setString(2, "%"+transactionId+"%");
             setstmt.execute();
 
         }catch (Exception e){

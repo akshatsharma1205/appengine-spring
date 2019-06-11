@@ -1,14 +1,9 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 import com.example.demo.dao.CustomerDAO;
-import com.example.demo.dao.DatabaseController;
 import com.example.demo.dao.TransactionsDAO;
-import com.example.demo.model.AddMoneyrequest;
+import com.example.demo.model.Paytm.AddMoneyrequest;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
-
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -18,11 +13,15 @@ public class AddMoney {
 
     private AddMoneyrequest addMoneyrequest;
     private String htmlResponse;
+    private CustomerDAO customer;
+    private TransactionsDAO transaction;
 
     public AddMoney(){}
 
-    public AddMoney(String mobileNo, String txnAmount, String orderId) {
+    public AddMoney(String mobileNo, String txnAmount, String orderId, CustomerDAO cust, TransactionsDAO trans) {
         this.addMoneyrequest=new AddMoneyrequest(mobileNo, txnAmount, orderId);
+        this.customer=new CustomerDAO(cust);
+        this.transaction=new TransactionsDAO(trans);
     }
 
     public String getResponse() {
@@ -34,13 +33,11 @@ public class AddMoney {
         try {
 
             //retrieve Customer Data
-            CustomerDAO customer= new CustomerDAO();
             customer.retrieveData(addMoneyrequest.getMobileNo());
             addMoneyrequest.setSso_token(customer.getAccessToken());
             addMoneyrequest.setCustId(customer.getCustomerId());
 
             //Update tranasactions table:
-            TransactionsDAO transaction = new TransactionsDAO();
             transaction.updateStatus(addMoneyrequest.getOrderId(),"Adding_Money");
 
         }catch (Exception e){e.printStackTrace();}

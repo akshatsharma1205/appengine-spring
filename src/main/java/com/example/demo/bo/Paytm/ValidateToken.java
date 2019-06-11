@@ -1,36 +1,31 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 
 
 import com.example.demo.dao.CustomerDAO;
-import com.example.demo.dao.DatabaseController;
-import com.example.demo.model.ValidateTokenRequest;
-import com.example.demo.model.ValidateTokenResponse;
+import com.example.demo.model.Paytm.ValidateTokenRequest;
+import com.example.demo.model.Paytm.ValidateTokenResponse;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class  ValidateToken {
 
     private ValidateTokenRequest request;
     private String responseData;
+    private CustomerDAO customer;
 
-    public ValidateToken(String phonenumber) {
+    public ValidateToken(String phonenumber, CustomerDAO cust) {
         this.request=new ValidateTokenRequest(phonenumber);
+        this.customer=new CustomerDAO(cust);
     }
-
-
 
 
     public void validate_token() {
         try {
 
-            CustomerDAO customer = new CustomerDAO();
             customer.retrieveData(request.getPhonenumber());
             request.setSessionToken(customer.getAccessToken());
 
@@ -45,7 +40,7 @@ public class  ValidateToken {
 
 
             //Affirmative response to data
-            responseData="exists";
+            responseData="true";
 
         } catch (Exception exception) {
             exception.printStackTrace();

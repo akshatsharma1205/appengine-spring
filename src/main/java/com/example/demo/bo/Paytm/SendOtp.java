@@ -1,9 +1,9 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 
 import com.example.demo.dao.CustomerDAO;
 import com.example.demo.dao.DatabaseController;
-import com.example.demo.model.SendOtpRequest;
-import com.example.demo.model.SendOtpResponse;
+import com.example.demo.model.Paytm.SendOtpRequest;
+import com.example.demo.model.Paytm.SendOtpResponse;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 
@@ -13,9 +13,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -25,6 +22,7 @@ public class SendOtp {
 	private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
 	private String responseData;
 	private SendOtpRequest request;
+	private CustomerDAO customer;
 
 
 	public String getResponseData() {
@@ -35,8 +33,9 @@ public class SendOtp {
 		this.responseData = responseData;
 	}
 
-	public SendOtp(String email, String phone) {
+	public SendOtp(String email, String phone, CustomerDAO cust) {
 		this.request=new SendOtpRequest(email, phone);
+		this.customer=new CustomerDAO(cust);
 	}
 	
 	public void Send_OTP() {
@@ -45,7 +44,6 @@ public class SendOtp {
 			accessURL();
 
 			//Saving state from response received for particular phone number
-			CustomerDAO customer = new CustomerDAO();
 			customer.retrieveData(request.getPhone());
 			Gson g = new Gson();
 			String state = g.fromJson(responseData, SendOtpResponse.class).getState();

@@ -1,6 +1,6 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 
-import com.example.demo.model.TransactionStatusRequest;
+import com.example.demo.model.Paytm.TransactionStatusRequest;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
 import org.json.JSONObject;
 

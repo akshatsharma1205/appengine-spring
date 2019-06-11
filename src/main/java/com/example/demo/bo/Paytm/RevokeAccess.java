@@ -1,4 +1,4 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ public class RevokeAccess {
 // for production
 // URL transactionURL = new URL("https://accounts.paytm.com/oauth2/accessToken/");
 
-    String session_token = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+    String session_token = "";
 
 
     public RevokeAccess(String session_token) {

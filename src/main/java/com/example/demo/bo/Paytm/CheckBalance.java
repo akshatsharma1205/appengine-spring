@@ -1,7 +1,7 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 import com.example.demo.dao.CustomerDAO;
-import com.example.demo.model.CheckBalanceRequest;
-import com.example.demo.model.CheckBalanceResponse;
+import com.example.demo.model.Paytm.CheckBalanceRequest;
+import com.example.demo.model.Paytm.CheckBalanceResponse;
 import com.example.demo.dao.DatabaseController;
 import com.google.gson.Gson;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
@@ -12,24 +12,29 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.time.temporal.ChronoUnit;
 import java.util.logging.Logger;
 
 public class CheckBalance {
-    String responseData;
 
+    private String responseData;
+    private Boolean response=false;
+    private CustomerDAO customer;
     CheckBalanceRequest request;
     HttpURLConnection connection = null;
+
+    public Boolean getResponse() {
+        return response;
+    }
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
 
     public CheckBalance() {
     }
 
-    public CheckBalance(String phonenumber,String bill, String orderId) {
+    public CheckBalance(String phonenumber, String bill, String orderId, CustomerDAO cust) {
         this.request=new CheckBalanceRequest(phonenumber,bill,orderId);
+        this.customer=new CustomerDAO(cust);
     }
 
 
@@ -42,7 +47,6 @@ public class CheckBalance {
 
         try {
             //Getting access token from table
-            CustomerDAO customer = new CustomerDAO();
             customer.retrieveData(request.getPhonenumber());
             request.setUserToken(customer.getAccessToken());
 
@@ -53,7 +57,12 @@ public class CheckBalance {
             //TODO error handling for failure response
             Gson g=new Gson();
             CheckBalanceResponse checkBalanceResponse= g.fromJson(responseData,CheckBalanceResponse.class);
-            responseData=checkBalanceResponse.getBody().getFundsSufficient();
+            if(checkBalanceResponse.getBody().getFundsSufficient().trim().equalsIgnoreCase("true")){
+                response=true;
+            }
+            else{
+                response=false;
+            }
 
 
         } catch (Exception exception) {

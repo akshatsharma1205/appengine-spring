@@ -1,9 +1,9 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 
 import com.example.demo.dao.CustomerDAO;
 import com.example.demo.dao.DatabaseController;
-import com.example.demo.model.ValidateOtpRequest;
-import com.example.demo.model.ValidateOtpResponse;
+import com.example.demo.model.Paytm.ValidateOtpRequest;
+import com.example.demo.model.Paytm.ValidateOtpResponse;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 
@@ -14,8 +14,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.TreeMap;
 
 public class ValidateOtp {
@@ -23,21 +21,22 @@ public class ValidateOtp {
 
     
     private ValidateOtpRequest request;
+    private CustomerDAO customer;
     String responseData;
     
     public String getResponseData() {
         return responseData;
     }
     
-    public ValidateOtp(String number, String otp) {
+    public ValidateOtp(String number, String otp,CustomerDAO cust) {
         this.request=new ValidateOtpRequest(number,otp);
+        this.customer=new CustomerDAO(cust);
 
     }
 
     
     public void validate_OTP() {
         try {
-            CustomerDAO customer= new CustomerDAO();
 
             //retrieve state for given phone number
             customer.retrieveData(request.getPhonenumber());

@@ -9,38 +9,41 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
 
-public class GetTransactionId {
+public class AllocateTransactionId {
 
     String PhoneNumber;
     String TransactionId;
     String TotalAmount;
+    private TransactionsDAO transaction;
     private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
 
 
-    public GetTransactionId() {
+    public AllocateTransactionId() {
     }
 
-    public GetTransactionId(String phoneNumber, String totalAmount) {
-        PhoneNumber = phoneNumber;
-        TotalAmount = totalAmount;
+    public AllocateTransactionId(String phoneNumber, String totalAmount, TransactionsDAO trans) {
+        this.PhoneNumber = phoneNumber;
+        this.TotalAmount = totalAmount;
+        this.transaction=new TransactionsDAO(trans);
     }
 
     public String getTransactionId() {
         return TransactionId;
     }
 
-    public void Get_transactionID(){
+    public String Get_transactionID(){
         try {
 
             //Auto-Increment TransactionId and insert into table
             TransactionsDAO transaction =  new TransactionsDAO();
-            TransactionId=transaction.getlastID()+1;
-            transaction.insertData(TransactionId,PhoneNumber,TotalAmount,"Checking_Balance");
+            TransactionId=Integer.toString(Integer.parseInt(transaction.getlastID())+1);
+            transaction.insertData(TransactionId,PhoneNumber,TotalAmount,"INIT_TXN");
+            return TransactionId;
 
 
         }catch (Exception e){
             LOGGER.info("failed");
-            e.printStackTrace();
+            return null;
         }
     }
 }

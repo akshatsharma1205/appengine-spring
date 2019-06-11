@@ -1,7 +1,7 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 
-import com.example.demo.model.TransactionStatusResponse;
-import com.example.demo.model.ValidateTokenResponse;
+import com.example.demo.model.Paytm.TransactionStatusResponse;
+import com.example.demo.model.Paytm.ValidateTokenResponse;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
 
 import java.io.BufferedReader;

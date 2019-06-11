@@ -1,10 +1,10 @@
-package com.example.demo.bo;
+package com.example.demo.bo.Paytm;
 
 import com.example.demo.dao.CustomerDAO;
 import com.example.demo.dao.DatabaseController;
 import com.example.demo.dao.TransactionsDAO;
-import com.example.demo.model.AutoDebitRequest;
-import com.example.demo.model.TransactionStatusResponse;
+import com.example.demo.model.Paytm.AutoDebitRequest;
+import com.example.demo.model.Paytm.TransactionStatusResponse;
 import com.google.gson.Gson;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
 import org.json.JSONObject;
@@ -25,14 +25,18 @@ public class AutoDebit {
     private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
 
     String responseData;
+    private CustomerDAO customer;
+    private TransactionsDAO transaction;
 
     AutoDebitRequest request;
     public String getResponseData() {
         return responseData;
     }
 
-    public AutoDebit(String number,String amount,String orderID) {
+    public AutoDebit(String number,String amount,String orderID,CustomerDAO cust, TransactionsDAO trans) {
         this.request=new AutoDebitRequest(number,amount,orderID);
+        this.customer=new CustomerDAO(cust);
+        this.transaction=new TransactionsDAO(trans);
     }
 
     public void auto_debit() {
@@ -40,10 +44,9 @@ public class AutoDebit {
 
         try {
             //retrieve state for given phone number
-            CustomerDAO dao =new CustomerDAO();
-            dao.retrieveData(request.getNumber());
-            request.setAccessToken(dao.getAccessToken());
-            request.setCustomerId(dao.getCustomerId());
+            customer.retrieveData(request.getNumber());
+            request.setAccessToken(customer.getAccessToken());
+            request.setCustomerId(customer.getCustomerId());
 
             accesdURL();
 
@@ -59,8 +62,7 @@ public class AutoDebit {
             TransactionStatusResponse transactionStatusResponse= g.fromJson(transactionStatus.getResponseData(),TransactionStatusResponse.class);
             responseData=transactionStatusResponse.getSTATUS();
 
-            TransactionsDAO transactions = new TransactionsDAO();
-            transactions.updateStatus(request.getOrderId(),responseData);
+            transaction.updateStatus(request.getOrderId(),responseData);
 
 
         } catch (Exception exception) {
