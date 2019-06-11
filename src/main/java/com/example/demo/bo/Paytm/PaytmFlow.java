@@ -9,7 +9,6 @@ public class PaytmFlow extends Flow {
         super.customerValidator = new PaytmCustomerValidator();
         super.debitMoney= new PaytmDebitMoney();
         super.checkFeasibility= new PaytmCheckFeasibility();
-
     }
 
 }

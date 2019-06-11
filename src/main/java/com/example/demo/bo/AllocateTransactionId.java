@@ -35,7 +35,6 @@ public class AllocateTransactionId {
         try {
 
             //Auto-Increment TransactionId and insert into table
-            TransactionsDAO transaction =  new TransactionsDAO();
             TransactionId=Integer.toString(Integer.parseInt(transaction.getlastID())+1);
             transaction.insertData(TransactionId,PhoneNumber,TotalAmount,"INIT_TXN");
             return TransactionId;

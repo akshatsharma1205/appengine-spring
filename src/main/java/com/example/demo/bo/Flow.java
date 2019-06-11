@@ -21,8 +21,8 @@ public abstract class Flow {
     public String CheckRegistered (String phoneNumber, String totalAmount){
 
         if (customerValidator.Validate(phoneNumber, totalAmount)){
-            AllocateTransactionId getTransactionId=new AllocateTransactionId(phoneNumber,totalAmount,new TransactionsDAO());
-            return getTransactionId.Get_transactionID();
+            AllocateTransactionId allocate=new AllocateTransactionId(phoneNumber,totalAmount,new TransactionsDAO());
+            return allocate.Get_transactionID();
         }else{
             return "false";
         }
