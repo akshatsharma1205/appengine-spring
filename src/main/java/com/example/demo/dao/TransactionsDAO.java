@@ -11,16 +11,18 @@ public class TransactionsDAO {
     String PhoneNumber;
     String Amount;
     String Status;
+    String PaymentMode;
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
     public TransactionsDAO() {
     }
 
-    public TransactionsDAO(String transactionId, String phoneNumber, String amount, String status) {
+    public TransactionsDAO(String transactionId, String phoneNumber, String amount, String status,String paymentMode) {
         TransactionId = transactionId;
         PhoneNumber = phoneNumber;
         Amount = amount;
         Status = status;
+        PaymentMode= paymentMode;
     }
 
     public TransactionsDAO(TransactionsDAO trans) {
@@ -28,6 +30,7 @@ public class TransactionsDAO {
         this.PhoneNumber = trans.getPhoneNumber();
         this.Amount = trans.getAmount();
         this.Status = trans.getStatus();
+        this.PaymentMode=trans.getPaymentMode();
     }
 
     public void retrieveData(String orderId){
@@ -42,6 +45,7 @@ public class TransactionsDAO {
                 PhoneNumber = rs.getString(2);
                 Amount = rs.getString(3);
                 Status=rs.getString(4);
+                PaymentMode=rs.getString(5);
             }
         }catch (Exception e){
 
@@ -49,15 +53,16 @@ public class TransactionsDAO {
         }
     }
 
-    public void insertData(String transactionId, String phoneNumber, String amount, String status){
+    public void insertData(String transactionId, String phoneNumber, String amount, String status, String paymentMode){
         try{
             Connection conn = DatabaseController.getConnection();
             PreparedStatement setstmt = conn.prepareStatement(
-                    "INSERT INTO Transactions (TransactionId, PhoneNumber, Amount, Status) VALUES (?, ?,?,?);");
+                    "INSERT INTO Transactions (TransactionId, PhoneNumber, Amount, Status,PaymentMode) VALUES (?, ?,?,?,?);");
             setstmt.setString(1, transactionId);
             setstmt.setString(2, phoneNumber);
             setstmt.setString(3, amount);
             setstmt.setString(4, status);
+            setstmt.setString(5,paymentMode);
             setstmt.execute();
 
         }catch (Exception e){
@@ -65,16 +70,17 @@ public class TransactionsDAO {
         }
     }
 
-    public void updateData(String transactionId, String phoneNumber, String amount, String status){
+    public void updateData(String transactionId, String phoneNumber, String amount, String status, String paymentMode){
         try{
             Connection conn = DatabaseController.getConnection();
 
             PreparedStatement setstmt = conn.prepareStatement(
-                    "UPDATE Transactions SET PhoneNumber=?, Amount=?, Status=? WHERE TransactionId LIKE ?;");
+                    "UPDATE Transactions SET PhoneNumber=?, Amount=?, Status=?, PaymentMode=? WHERE TransactionId LIKE ?;");
             setstmt.setString(1, phoneNumber);
             setstmt.setString(2, amount);
             setstmt.setString(3, status);
-            setstmt.setString(4, "%"+transactionId+"%");
+            setstmt.setString(4,paymentMode);
+            setstmt.setString(5, "%"+transactionId+"%");
             setstmt.execute();
 
         }catch (Exception e){
@@ -127,5 +133,9 @@ public class TransactionsDAO {
 
     public String getStatus() {
         return Status;
+    }
+
+    public String getPaymentMode() {
+        return PaymentMode;
     }
 }

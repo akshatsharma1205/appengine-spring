@@ -18,11 +18,11 @@ public abstract class Flow {
 
     //GENERAL APIs FLOW SPLITTER
 
-    public String CheckRegistered (String phoneNumber, String totalAmount){
+    public String CheckRegistered (String phoneNumber, String totalAmount,String mode){
 
         if (customerValidator.Validate(phoneNumber, totalAmount)){
             AllocateTransactionId allocate=new AllocateTransactionId(phoneNumber,totalAmount,new TransactionsDAO());
-            return allocate.Get_transactionID();
+            return allocate.Get_transactionID(mode);
         }else{
             return "false";
         }

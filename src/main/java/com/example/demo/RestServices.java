@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.bo.*;
 import com.example.demo.bo.Paytm.*;
+import com.example.demo.bo.PhonePe.*;
 import com.example.demo.dao.CustomerDAO;
 import com.example.demo.dao.TransactionsDAO;
 import com.example.demo.model.Paytm.SendOtpResponse;
@@ -57,7 +58,7 @@ public class RestServices implements ErrorController {
 			default:
 				flow = new PaytmFlow();
 		}
-		return flow.CheckRegistered(number,totalamount);
+		return flow.CheckRegistered(number,totalamount,mode);
 	}
 
 	@RequestMapping("/initiate")
@@ -144,6 +145,53 @@ public class RestServices implements ErrorController {
 		revoke.revoke_access();
 		return revoke.getResponseData();
 	}
+
+
+	//******************************************************************************************************************8
+	//TODO phonepay exculsive
+	RequestPaymentResponse requestPaymentResponse;
+
+	@RequestMapping("/requestpayment")
+	public String RequestPayment(@RequestParam(value ="number",defaultValue = "0")String number,
+								 @RequestParam(value="totalamount", defaultValue="0.00") String totalamount) {
+
+		RequestPayment v = new RequestPayment();
+		v.setAmount(Integer.parseInt(totalamount));
+		v.setInstrumentReference(number);
+		v.setTransactionId("TX123456789"+totalamount);
+		v.requestpayment_main();
+		Gson g=new Gson();
+		requestPaymentResponse= g.fromJson(v.getResponseData(),RequestPaymentResponse.class);
+		if (requestPaymentResponse.getSuccess()==true){return "Request Sent To User";}
+		else {return "Something went Wrong!!";}
+	}
+
+	@RequestMapping("/checkpaymentstatus")
+	public String CheckPaymentStatus() {
+
+		CheckPaymentStatus c = new CheckPaymentStatus();
+		c.checkpaymentstatus_main();
+		return c.getResponseData();
+	}
+
+
+	@RequestMapping("/cancelpaymentrequest")
+	public String CancelPaymentRequest() {
+
+		CancelPaymentRequest can = new CancelPaymentRequest();
+		can.cancelpaymentrequest_main();
+		return can.getResponseData();
+	}
+
+
+	@RequestMapping("/remindpaymentrequest")
+	public String RemindPaymentRequest() {
+
+		RemindPaymentRequest remind = new RemindPaymentRequest();
+		remind.remindpaymentrequest_main();
+		return remind.getResponseData();
+	}
+
 
 
 }

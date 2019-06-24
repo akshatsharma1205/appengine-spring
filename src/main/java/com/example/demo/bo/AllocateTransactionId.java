@@ -31,12 +31,12 @@ public class AllocateTransactionId {
         return TransactionId;
     }
 
-    public String Get_transactionID(){
+    public String Get_transactionID(String paymentMode){
         try {
 
             //Auto-Increment TransactionId and insert into table
             TransactionId=Integer.toString(Integer.parseInt(transaction.getlastID())+1);
-            transaction.insertData(TransactionId,PhoneNumber,TotalAmount,"INIT_TXN");
+            transaction.insertData(TransactionId,PhoneNumber,TotalAmount,"INIT_TXN",paymentMode);
             return TransactionId;
 
 
