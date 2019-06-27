@@ -53,16 +53,17 @@ public class TransactionsDAO {
         }
     }
 
-    public void insertData(String transactionId, String phoneNumber, String amount, String status, String paymentMode){
+    public void insertData(String timestamp, String transactionId, String phoneNumber, String amount, String status, String paymentMode){
         try{
             Connection conn = DatabaseController.getConnection();
             PreparedStatement setstmt = conn.prepareStatement(
-                    "INSERT INTO Transactions (TransactionId, PhoneNumber, Amount, Status,PaymentMode) VALUES (?, ?,?,?,?);");
-            setstmt.setString(1, transactionId);
-            setstmt.setString(2, phoneNumber);
-            setstmt.setString(3, amount);
-            setstmt.setString(4, status);
-            setstmt.setString(5,paymentMode);
+                    "INSERT INTO Transactions (TimeStamp, TransactionId, PhoneNumber, Amount, Status,PaymentMode) VALUES (?,?, ?,?,?,?);");
+            setstmt.setString(1, timestamp);
+            setstmt.setString(2, transactionId);
+            setstmt.setString(3, phoneNumber);
+            setstmt.setString(4, amount);
+            setstmt.setString(5, status);
+            setstmt.setString(6,paymentMode);
             setstmt.execute();
 
         }catch (Exception e){
@@ -70,6 +71,7 @@ public class TransactionsDAO {
         }
     }
 
+    /*
     public void updateData(String transactionId, String phoneNumber, String amount, String status, String paymentMode){
         try{
             Connection conn = DatabaseController.getConnection();
@@ -88,6 +90,10 @@ public class TransactionsDAO {
         }
     }
 
+
+     */
+
+    /*
     public String getlastID(){
         try{
             Connection conn = DatabaseController.getConnection();
@@ -100,6 +106,8 @@ public class TransactionsDAO {
             return lastId;
         }catch (Exception e){return null;}
     }
+    */
+
 
     public void  updateStatus(String transactionId,String status){
         try{

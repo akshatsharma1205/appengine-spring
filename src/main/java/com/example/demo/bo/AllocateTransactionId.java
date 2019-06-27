@@ -7,6 +7,8 @@ import com.example.demo.dao.DatabaseController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class AllocateTransactionId {
@@ -27,16 +29,13 @@ public class AllocateTransactionId {
         this.transaction=new TransactionsDAO(trans);
     }
 
-    public String getTransactionId() {
-        return TransactionId;
-    }
 
     public String Get_transactionID(String paymentMode){
         try {
 
-            //Auto-Increment TransactionId and insert into table
-            TransactionId=Integer.toString(Integer.parseInt(transaction.getlastID())+1);
-            transaction.insertData(TransactionId,PhoneNumber,TotalAmount,"INIT_TXN",paymentMode);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            TransactionId= UUID.randomUUID().toString();
+            transaction.insertData(timestamp.toString(),TransactionId,PhoneNumber,TotalAmount,"INIT_TXN",paymentMode);
             return TransactionId;
 
 

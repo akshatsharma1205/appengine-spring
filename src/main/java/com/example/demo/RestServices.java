@@ -1,6 +1,9 @@
 package com.example.demo;
 
 import com.example.demo.bo.*;
+import com.example.demo.bo.AmazonPay.signAndEncrypt;
+import com.example.demo.bo.AmazonPay.signAndEncryptForOperation;
+import com.example.demo.bo.AmazonPay.verifySignature;
 import com.example.demo.bo.Paytm.*;
 import com.example.demo.bo.PhonePe.*;
 import com.example.demo.dao.CustomerDAO;
@@ -13,6 +16,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.atomic.AtomicLong;
 
 
@@ -191,7 +196,28 @@ public class RestServices implements ErrorController {
 		remind.remindpaymentrequest_main();
 		return remind.getResponseData();
 	}
+//******************************************************************************************************************
+	//TODO AmazonPay exclusive
 
+	@GetMapping("/signAndEncrypt")
+	public String signAndEncrypt(HttpServletRequest request, HttpServletResponse response){
+		signAndEncrypt S = new signAndEncrypt();
+		return S.signNEncrypt(request,response);
+	}
+
+
+	@GetMapping("/verifySignature")
+	public Boolean verifySignature(HttpServletRequest request, HttpServletResponse response){
+		verifySignature V = new verifySignature();
+		return V.verifySignature(request,response);
+	}
+
+
+	@GetMapping("/signAndEncryptForOperation")
+	public String signAndEncryptForOperation(HttpServletRequest request, HttpServletResponse response ){
+		signAndEncryptForOperation S = new signAndEncryptForOperation();
+		return S.signAndEncrypt(request,response);
+	}
 
 
 }
