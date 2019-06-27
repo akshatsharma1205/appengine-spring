@@ -4,10 +4,11 @@ import com.example.demo.dao.CustomerDAO;
 import com.example.demo.dao.TransactionsDAO;
 import com.example.demo.dao.DatabaseController;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -33,9 +34,12 @@ public class AllocateTransactionId {
     public String Get_transactionID(String paymentMode){
         try {
 
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            SimpleDateFormat sd = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+            Date date = new Date();
+            sd.setTimeZone(TimeZone.getTimeZone("IST"));
             TransactionId= UUID.randomUUID().toString();
-            transaction.insertData(timestamp.toString(),TransactionId,PhoneNumber,TotalAmount,"INIT_TXN",paymentMode);
+            transaction.insertData(sd.format(date),TransactionId,PhoneNumber,TotalAmount,"INIT_TXN",paymentMode);
             return TransactionId;
 
 
