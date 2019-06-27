@@ -14,6 +14,10 @@ public class CheckPaymentStatusResponse {
         this.message = message;
     }
 
+    public CheckPaymentStatusResponse() {
+
+    }
+
     public Data getData() {
         return data;
     }

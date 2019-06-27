@@ -1,13 +1,9 @@
 package com.example.demo.bo.PhonePe;
 import java.io.BufferedReader;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-
 import static com.example.demo.bo.PhonePe.SHA256.SHA256;
 
 public class RemindPaymentRequest {
@@ -20,7 +16,7 @@ public class RemindPaymentRequest {
     public RemindPaymentRequest() { }
     String responseData;
     String merchantId = "M2306160483220675579140";
-    String transactionId = "TX123456789qw";
+    String transactionId = "TX123456967859qwwww";
     String merchantOrderId = "M123456789";
     Integer amount = 1;
     String instrumentType = "MOBILE";

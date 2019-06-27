@@ -1,15 +1,9 @@
 package com.example.demo.bo.PhonePe;
-
-
 import java.io.BufferedReader;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-
 
 import static com.example.demo.bo.PhonePe.SHA256.SHA256;
 
@@ -23,18 +17,17 @@ public class CheckPaymentStatus {
     public CheckPaymentStatus() { }
     String responseData;
     String merchantId = "M2306160483220675579140";
-    String transactionId = "TX123456789qw";
-    String merchantOrderId = "M123456789";
-    Integer amount = 1;
-    String instrumentType = "MOBILE";
-    String instrumentReference = "7397430279";
-    String message = "collect for XXX order";
-    String email = "amitxxx75@gmail.com";
-    Integer expiresIn = 180;
-    String storeId = "store1";
-    String terminalId = "terminal1";
+    String transactionId ;
     String salt_key="8289e078-be0b-484d-ae60-052f117f8deb";
     String salt_index="1";
+
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
 
     public void checkpaymentstatus_main(){
 
@@ -51,11 +44,18 @@ public class CheckPaymentStatus {
 
             InputStream is = connection.getInputStream();
             BufferedReader responseReader = new BufferedReader(new InputStreamReader(is));
-            if ((responseData = responseReader.readLine()) != null) {
+
+            responseData = responseReader.readLine();
+                    /*
+            if (() != null) {
                 System.out.append("Response Json = " + responseData);
             }
-            System.out.append("Requested Json = " + xverify + " ");
+            System.out.append("Requested Json = " + xverify + " ^^^^^^^^^^^^^^^^");
             responseReader.close();
+
+                     */
+
+
         } catch (Exception exception) {
             exception.printStackTrace();
         }

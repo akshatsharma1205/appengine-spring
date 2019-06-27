@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.amazon.pwain.types.PWAINConstants;
 import com.example.demo.bo.*;
 import com.example.demo.bo.AmazonPay.signAndEncrypt;
 import com.example.demo.bo.AmazonPay.signAndEncryptForOperation;
@@ -7,9 +8,12 @@ import com.example.demo.bo.AmazonPay.verifySignature;
 import com.example.demo.bo.Paytm.*;
 import com.example.demo.bo.PhonePe.*;
 import com.example.demo.dao.CustomerDAO;
+import com.example.demo.dao.DatabaseController;
 import com.example.demo.dao.TransactionsDAO;
 import com.example.demo.model.Paytm.SendOtpResponse;
 import com.example.demo.model.Paytm.ValidateOtpResponse;
+
+import com.example.demo.model.PhonePe.CheckPaymentStatusResponse;
 import com.google.gson.Gson;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,13 +22,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
 
 
 @SpringBootApplication
 @RestController
 
 public class RestServices implements ErrorController {
+
+	private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
 
 	public static void main(String[] args) {
 		SpringApplication.run(RestServices.class, args);
@@ -154,29 +162,44 @@ public class RestServices implements ErrorController {
 
 	//******************************************************************************************************************8
 	//TODO phonepay exculsive
-	RequestPaymentResponse requestPaymentResponse;
 
 	@RequestMapping("/requestpayment")
 	public String RequestPayment(@RequestParam(value ="number",defaultValue = "0")String number,
-								 @RequestParam(value="totalamount", defaultValue="0.00") String totalamount) {
+								 @RequestParam(value="totalamount", defaultValue="0.00") Integer totalamount) {
+		RequestPayment requestPayment = new RequestPayment();
 
-		RequestPayment v = new RequestPayment();
-		v.setAmount(Integer.parseInt(totalamount));
-		v.setInstrumentReference(number);
-		v.setTransactionId("TX123456789"+totalamount);
-		v.requestpayment_main();
+
+		String transactionId = new AllocateTransactionId(number,String.valueOf(totalamount/100),new TransactionsDAO()).Get_transactionID("phonpe");
+		requestPayment.setTransactionId(transactionId);
+		requestPayment.requestpayment_main(number,totalamount);
+
+
 		Gson g=new Gson();
-		requestPaymentResponse= g.fromJson(v.getResponseData(),RequestPaymentResponse.class);
-		if (requestPaymentResponse.getSuccess()==true){return "Request Sent To User";}
-		else {return "Something went Wrong!!";}
+		RequestPaymentResponse requestPaymentResponse= g.fromJson(requestPayment.getResponseData(),RequestPaymentResponse.class);
+		if (requestPaymentResponse.getSuccess()==true){
+
+			return transactionId;
+		}
+		else {
+			//TODO add failure code
+			return null;}
 	}
 
 	@RequestMapping("/checkpaymentstatus")
-	public String CheckPaymentStatus() {
+	public String CheckPaymentStatus(@RequestParam(value="transid",defaultValue="0") String TransactionId) {
 
-		CheckPaymentStatus c = new CheckPaymentStatus();
-		c.checkpaymentstatus_main();
-		return c.getResponseData();
+		CheckPaymentStatus checkPaymentStatus = new CheckPaymentStatus();
+		checkPaymentStatus.setTransactionId(TransactionId);
+		checkPaymentStatus.checkpaymentstatus_main();
+
+		Gson g=new Gson();
+		CheckPaymentStatusResponse checkPaymentStatusResponse= g.fromJson(checkPaymentStatus.getResponseData(), CheckPaymentStatusResponse.class);
+
+		TransactionsDAO transaction = new TransactionsDAO();
+		transaction.updateStatus(TransactionId, checkPaymentStatusResponse.getCode());
+
+		return (checkPaymentStatusResponse.getMessage());
+
 	}
 
 

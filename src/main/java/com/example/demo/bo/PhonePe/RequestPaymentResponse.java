@@ -14,6 +14,10 @@ public class RequestPaymentResponse {
         this.message = message;
     }
 
+    public RequestPaymentResponse() {
+
+    }
+
     public Data getData() {
         return data;
     }

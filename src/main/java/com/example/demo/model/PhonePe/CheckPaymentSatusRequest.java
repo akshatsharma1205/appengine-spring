@@ -13,6 +13,10 @@ public class CheckPaymentSatusRequest {
         this.salt_index = salt_index;
     }
 
+    public CheckPaymentSatusRequest() {
+
+    }
+
     public String getMerchantId() {
         return merchantId;
     }

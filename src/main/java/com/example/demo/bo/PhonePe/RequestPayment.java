@@ -2,12 +2,10 @@ package com.example.demo.bo.PhonePe;
 
 import org.json.JSONObject;
 
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
@@ -15,8 +13,6 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import static com.example.demo.bo.PhonePe.SHA256.SHA256;
-
-
 public class RequestPayment {
 
 
@@ -29,11 +25,12 @@ public class RequestPayment {
     }
 
     public RequestPayment() { }
-    Random rand =new Random();
 
     String responseData;
+    Random rand= new Random();
     String merchantId = "M2306160483220675579140 ";
-    String transactionId = "TX123456789qw";
+    //String transactionId = "TX123"+rand.nextInt(4000);
+    String transactionId;
     String merchantOrderId = "M123456789";
     Integer amount = 1;
     String instrumentType = "MOBILE";
@@ -46,27 +43,23 @@ public class RequestPayment {
     String salt_key="8289e078-be0b-484d-ae60-052f117f8deb";
     String salt_index="1";
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
-
-    public void setInstrumentReference(String instrumentReference) {
-        this.instrumentReference = instrumentReference;
+    public String getTransactionId() {
+        return transactionId;
     }
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
     }
 
-    public void requestpayment_main(){
+    public void requestpayment_main(String number, Integer totalamount){
 
             TreeMap payload = new TreeMap();
             payload.put("merchantId", merchantId);
-            payload.put("transactionId", transactionId+rand.nextInt(100));
+            payload.put("transactionId", transactionId);
             payload.put("merchantOrderId", merchantOrderId);
-            payload.put("amount", amount);
+            payload.put("amount", totalamount);
             payload.put("instrumentType", instrumentType);
-            payload.put("instrumentReference", instrumentReference);
+            payload.put("instrumentReference", number);
             payload.put("message", message);
             payload.put("email", email);
             payload.put("expiresIn", expiresIn);
