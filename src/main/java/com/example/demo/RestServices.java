@@ -222,6 +222,13 @@ public class RestServices implements ErrorController {
 //******************************************************************************************************************
 	//TODO AmazonPay exclusive
 
+	// Amazon transaction hits the banckend four time in the following sequence
+	// 1) signAndEncrypt
+	// 2) verifySignature
+	// 3) signAndEncryptForOperation
+	// 4) verifySignature
+	// We pass the same http request, parse it in java classes and return the response
+
 	@GetMapping("/signAndEncrypt")
 	public String signAndEncrypt(HttpServletRequest request, HttpServletResponse response){
 		signAndEncrypt S = new signAndEncrypt();
