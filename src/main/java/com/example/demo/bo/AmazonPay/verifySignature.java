@@ -18,15 +18,22 @@ public class verifySignature {
         try {
             MerchantCredentials cred = new MerchantCredentials();
 
+            //Set the merchant credentials
+
             String sellerId = cred.getSellerId();
             String accessKey = cred.getAccessKey();
             String secretKey = cred.getSecretKey();
 
+            //create a new hashmap in which we add all the required parameters 
+
             HashMap<String, String> verificationParameters = new HashMap<String, String>();
+
+            //Retrieve the parameters name from the url 
 
             Enumeration<String> parameterNames = request.getParameterNames();
 
 
+            //Add the parameters from the url in the hash map
 
             while (parameterNames.hasMoreElements()) {
 
@@ -37,9 +44,16 @@ public class verifySignature {
                 verificationParameters.put(paramName, paramValue[0]);
 
             }
+
+            //Set the connection with our merchant credentials 
+
             PWAINBackendSDK backendSDK = new PWAINBackendSDK(new MerchantConfiguration.Builder().withAwsAccessKeyId(accessKey).withAwsSecretKeyId(secretKey).withSellerId(sellerId).build());
 
+            //Call the function verify signature with required parameters
+
             backendSDK.verifySignature(verificationParameters);
+
+            //Checking if the verify signature contain transaction status, if yes then save the status in transaction table
 
             if(request.getParameterMap().containsKey(PWAINConstants.TRANSACTION_STATUS_DESCRIPTION)){
                 System.out.println(request.getParameter(PWAINConstants.TRANSACTION_STATUS_DESCRIPTION));
@@ -47,13 +61,7 @@ public class verifySignature {
                 transaction.updateStatus(request.getParameter(PWAINConstants.MERCHANT_TRANSACTION_ID),request.getParameter(PWAINConstants.TRANSACTION_STATUS_DESCRIPTION) );
             }
 
-    /*        if(request.getParameter(PWAINConstants.TRANSACTION_STATUS_DESCRIPTION) != null){
 
-                TransactionsDAO transaction = new TransactionsDAO();
-                transaction.updateStatus(request.getParameter(PWAINConstants.MERCHANT_TRANSACTION_ID),request.getParameter(PWAINConstants.TRANSACTION_STATUS_DESCRIPTION) );
-
-            }
-    */
 
             return true;
         } catch (PWAINException e){
